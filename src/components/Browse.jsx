@@ -2,7 +2,9 @@ import React from 'react'
 
 const Browse = () => {
   return (
-    <div>Browse</div>
+    <div>
+      <h2>hello user</h2>
+    </div>
   )
 }
 
