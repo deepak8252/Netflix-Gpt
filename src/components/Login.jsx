@@ -2,9 +2,14 @@ import React, { useRef, useState } from 'react'
 import Header from './Header'
 import Form from 'react-bootstrap/Form';
 import { checkvalidata } from '../util/validate';
+import {  createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth"
+import { auth } from '../util/firbase';
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
-  const email=useRef();
-  const password=useRef();
+  const navigate=useNavigate();
+  const email=useRef(null);
+  const password=useRef(null);
+  const name=useRef(null);
   const [issignupform,setissignupform]=useState(false);
   const [errormessage,seterrormessage]=useState("");
   const togglesignup=()=>{
@@ -14,7 +19,38 @@ const Login = () => {
   const handlesubmit=()=>{
 const message= checkvalidata(email.current.value,password.current.value);
 seterrormessage(message);
+ if(message)return;
+ if(issignupform){
 
+  createUserWithEmailAndPassword(auth, email.current.value,password.current.value)
+    .then((userCredential) => {
+      // Signed up 
+      const user = userCredential.user;
+      console.log(user);
+      navigate("/browse")
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      seterrormessage(errorCode, "=", errorMessage)
+    });
+  
+ }
+ else{
+  signInWithEmailAndPassword(auth,email.current.value,password.current.value)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    console.log(user);
+    navigate("/browse")
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorCode, errorMessage)
+  });
+
+ }
   }
   return (
   <>
@@ -28,7 +64,7 @@ seterrormessage(message);
         <Form.Control ref={email} type="email" placeholder="enter your email" className='p-3 w-full bg-gray-900' />
       </Form.Group>
       {issignupform? <Form.Group className="my-5 " controlId="exampleForm.ControlInput1">
-        <Form.Control type="name" placeholder="full name" className='p-3 w-full bg-gray-900' />
+        <Form.Control type="name" ref={name}  placeholder="full name" className='p-3 w-full bg-gray-900' />
       </Form.Group>:<></>}
        <Form.Group className="my-5 " controlId="exampleForm.ControlInput1">
         <Form.Control type="password" ref={password} placeholder="enter your password" className='p-3 w-full bg-gray-900' />
