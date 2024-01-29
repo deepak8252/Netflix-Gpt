@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import Header from './Header'
 import Form from 'react-bootstrap/Form';
 import { checkvalidata } from '../util/validate';
-import {  createUserWithEmailAndPassword,signInWithEmailAndPassword } from "firebase/auth"
+import {  createUserWithEmailAndPassword,signInWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { auth } from '../util/firbase';
 import { useNavigate } from 'react-router-dom';
 const Login = () => {
@@ -27,7 +27,17 @@ seterrormessage(message);
       // Signed up 
       const user = userCredential.user;
       console.log(user);
-      navigate("/browse")
+      updateProfile(user, {
+        displayName: name.current.value, photoURL: "https://example.com/jane-q-user/profile.jpg"
+      }).then(() => {
+        // Profile updated!
+        navigate("/browse")
+        
+      }).catch((error) => {
+        // An error occurred
+        seterrormessage(error.message)
+      });
+      
     })
     .catch((error) => {
       const errorCode = error.code;
