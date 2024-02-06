@@ -5,11 +5,14 @@ import { checkvalidata } from '../util/validate';
 import {  createUserWithEmailAndPassword,signInWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { auth } from '../util/firbase';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addUser } from '../util/userSlice';
 const Login = () => {
   const navigate=useNavigate();
   const email=useRef(null);
   const password=useRef(null);
   const name=useRef(null);
+  const dispatch=useDispatch()
   const [issignupform,setissignupform]=useState(false);
   const [errormessage,seterrormessage]=useState("");
   const togglesignup=()=>{
@@ -31,6 +34,10 @@ seterrormessage(message);
         displayName: name.current.value, photoURL: "https://example.com/jane-q-user/profile.jpg"
       }).then(() => {
         // Profile updated!
+        const {uid,email,displayName,photoURL }= user;
+        dispatch(addUser({
+          uid:uid,email:email,displayName:displayName,photoURL:photoURL
+        }));
         navigate("/browse")
         
       }).catch((error) => {
@@ -64,9 +71,9 @@ seterrormessage(message);
   }
   return (
   <>
+     
+    <div className=' absolute bg-login flex flex-wrap' >
     <div><Header/></div>
-    <div className=' absolute bg-login ' >
-    <img src="" alt="" />
   </div>
   <Form onSubmit={(e)=>e.preventDefault()} className=' text-center bg-black p-11 relative top-36 left-0 right-0  mx-auto shadow-lg rounded-2xl bg-opacity-80 w-80 text-white'>
      <h2 className='text-white font-bold text-2xl text-center'>{issignupform?"SIGN UP":"SIGN IN"}</h2>
