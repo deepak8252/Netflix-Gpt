@@ -28,7 +28,7 @@ signOut(auth).then(() => {
          </select>
        <button className='bg-red-600 text-white p-3 capitalize '
        onClick={handleSignout}
-       >signout</button>
+       >Signout</button>
      </div>
        }
 
